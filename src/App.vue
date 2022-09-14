@@ -1,85 +1,86 @@
-<script setup>
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
-</script>
-
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
+<main>
+	<form @submit.prevent>
 
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
+		<label for="amount">Amount:</label>
+		<input v-model="formData.amount" id="amount" type="number" />
 
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
-    </div>
-  </header>
+		<label for="baseCurrency">Base currency:</label>
+		<select 
+			name="baseCurrency" 
+			id="baseCurrency"
+			v-model="formData.currencyCode"
+			@change="getCurrencyData(formData.currencyCode)">
 
-  <RouterView />
+			<option value="">Please select</option>
+			<option v-for="(option, index) in currencyList" :key="index" :value="option.currencyCode">
+				{{ option.currencyName }} - {{ option.currencyCode }}
+			</option>
+			
+		</select>
+
+		<label for="convertToCurrency">Convert to currency:</label>
+		<select 
+			name="convertToCurrency" 
+			id="convertToCurrency" 
+			v-model="formData.toConvertCurrencyCode"
+			@change="formData.toConvertExchangeRate = $event.target.value; formData.toConvertCurrencyCode = $event.target.options[$event.target.options.selectedIndex].text.split('-').pop(); updateRates($event)">
+
+			<option value="">Please select currency to convert to</option>
+			<option v-for="(option, index) in currencyList" :key="index" :value="option.toConvertExchangeRate">
+				{{ option.currencyName }} - {{ option.currencyCode }}
+			</option>
+
+		</select>
+
+		<button @click="convert">Convert</button>
+		<span> {{ result }} </span>
+	</form>
+</main>
 </template>
+<script>
+import { mapActions, mapState } from 'pinia';
 
-<style scoped>
-header {
-  line-height: 1.5;
-  max-height: 100vh;
-}
+import { useCurrencyStore } from '@/stores/currency';
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-nav {
-  width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
-}
-
-nav a.router-link-exact-active {
-  color: var(--color-text);
-}
-
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
-}
-
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-  border: 0;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
-  }
-}
-</style>
+export default {
+	data: () => ({
+		result: null,
+		formData: {
+			amount: null,
+			currencyCode: '',
+			currencyName: '',
+			currencyExchangeRate: null,
+			toConvertCurrencyCode: '',
+			toConvertCurrencyName:'',
+			toConvertExchangeRate: null
+		}
+	}),
+	computed: {
+		...mapState(useCurrencyStore, ['currencyList'])
+	},
+	methods: {
+		convert () {
+			console.log('this.formData.toConvertExchangeRate', this.formData.toConvertExchangeRate);
+			this.result = (this.formData.amount * this.formData.toConvertExchangeRate).toFixed(2);
+			const currencyStore = useCurrencyStore();
+			currencyStore.$patch({
+				...this.formData
+			});
+		},
+		async getCurrencyData (currCode) {
+			await this.getRatesValues(currCode);
+			console.log('formData.currencyCode is:', this.formData.currencyCode);
+			console.log('curr code is', currCode);
+		},
+		async updateRates (event) {
+			await this.updateRatesValues(this.formData.toConvertCurrencyCode.trim().toLowerCase());
+			console.log(event.target.options);
+		},
+		...mapActions(useCurrencyStore, ['getRatesValues', 'updateRatesValues'])
+	},
+	mounted () {
+		this.getCurrencyData('gbp');
+	}
+};
+</script>
