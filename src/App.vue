@@ -9,11 +9,11 @@
 		<select 
 			name="baseCurrency" 
 			id="baseCurrency"
-			v-model="formData.currencyCode"
-			@change="getCurrencyData(formData.currencyCode)">
+			v-model="currencyCode"
+			@change="getCurrencyData(currencyCode)">
 
 			<option value="">Please select</option>
-			<option v-for="(option, index) in currencyList" :key="index" :value="option.currencyCode">
+			<option v-for="(option, index) in currencyList" :key="index" :value="currencyCode">
 				{{ option.currencyName }} - {{ option.currencyCode }}
 			</option>
 			
@@ -23,11 +23,11 @@
 		<select 
 			name="convertToCurrency" 
 			id="convertToCurrency" 
-			v-model="formData.toConvertCurrencyCode"
-			@change="formData.toConvertExchangeRate = $event.target.value; formData.toConvertCurrencyCode = $event.target.options[$event.target.options.selectedIndex].text.split('-').pop(); updateRates($event)">
+			v-model="currencyCode"
+			@change="formData.toConvertExchangeRate = $event.target.value; formData.toConvertCurrencyCode = $event.target.options[$event.target.options.selectedIndex].text.split('-').pop(); getCurrencyData(currencyCode)">
 
 			<option value="">Please select currency to convert to</option>
-			<option v-for="(option, index) in currencyList" :key="index" :value="option.toConvertExchangeRate">
+			<option v-for="(option, index) in currencyList" :key="index" :value="option.currencyCode">
 				{{ option.currencyName }} - {{ option.currencyCode }}
 			</option>
 
@@ -48,16 +48,16 @@ export default {
 		result: null,
 		formData: {
 			amount: null,
-			currencyCode: '',
+			/* currencyCode: this.currencyCode, */
 			currencyName: '',
-			currencyExchangeRate: null,
-			toConvertCurrencyCode: '',
-			toConvertCurrencyName:'',
 			toConvertExchangeRate: null
 		}
 	}),
 	computed: {
-		...mapState(useCurrencyStore, ['currencyList'])
+		...mapState(useCurrencyStore, ['currencyList']),
+		...mapState(useCurrencyStore, {
+			currencyCode: 'currencyCode'
+		})
 	},
 	methods: {
 		convert () {
@@ -73,10 +73,10 @@ export default {
 			console.log('formData.currencyCode is:', this.formData.currencyCode);
 			console.log('curr code is', currCode);
 		},
-		async updateRates (event) {
+		/* async updateRates (event) {
 			await this.updateRatesValues(this.formData.toConvertCurrencyCode.trim().toLowerCase());
 			console.log(event.target.options);
-		},
+		}, */
 		...mapActions(useCurrencyStore, ['getRatesValues', 'updateRatesValues'])
 	},
 	mounted () {
