@@ -1,0 +1,26 @@
+/* normally working with variables makes styling easier to maintain such as: 
+margin-inline-end: var(--spacing-01);  
+*/
+@import url("https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@500&display=swap");
+@import "./utilities";
+
+body,
+input,
+select {
+  font-family: "Source Sans 3", sans-serif;
+}
+
+form {
+  gap: 1rem;
+  & div {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+  }
+}
+
+button {
+  width: 10rem;
+  height: 2rem;
+  border: 1px solid #333;
+}

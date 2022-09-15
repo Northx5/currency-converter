@@ -1,0 +1,24 @@
+/* utility classes for commonly used styling */
+.grid {
+  display: grid;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-column {
+  flex-direction: column;
+}
+
+.m-t-1 {
+  margin-block-start: 1rem;
+}
+
+.font-16 {
+  font-size: 1.6rem;
+}
+
+.align-self-end {
+  align-self: end;
+}

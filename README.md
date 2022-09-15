@@ -1,6 +1,17 @@
 # currency-converter
 
-This template should help get you started developing with Vue 3 in Vite.
+Hello!
+
+This app is a simple currency converter. It uses Vue 3, Pinia for store management, Vite for bundling, SCSS preprosessor, Cypress for E2E testing.
+
+Router dynamically imports routes for performance.
+
+CurrencyConverter.cy.js under cypress > e2e is a test checking if form elements exist.
+
+SCSS files are dynamically imported in views and components for improving performance. Utility classes are used for commonly used css declarations.
+
+Form validation is not included due to time constraints I'm afraid, sorry about that.
+
 
 ## Recommended IDE Setup
 
