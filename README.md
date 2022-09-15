@@ -4,7 +4,7 @@ Hello!
 
 This app is a simple currency converter. It uses Vue 3, Pinia for store management, Vite for bundling, SCSS preprosessor, Cypress for E2E testing.
 
-Router dynamically imports routes for performance.
+Router dynamically imports routes for improving performance.
 
 CurrencyConverter.cy.js under cypress > e2e is a test checking if form elements exist.
 
