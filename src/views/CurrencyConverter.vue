@@ -1,9 +1,9 @@
 <template>
-<form @submit.prevent="convert" class="flex flex-column" ref="form">
-
+<Form @submit="convert" class="flex flex-column" ref="form" v-slot="{ errors }">
+	<span class="error">{{ errors.field }}</span>
 	<div>
 		<label for="amount" data-cy="amount-label">Amount:</label>
-		<input v-model="formData.amount" id="amount" type="number" data-cy="amount-input"/>
+		<Field name="field" :rules="isRequired" v-model="formData.amount" id="amount" type="number" data-cy="amount-input"/>		
 	</div>
 
 	<SelectField 
@@ -35,18 +35,23 @@
 		<span>Conversion Result:</span>
 		<span class="font-16"> {{ result || '0' }} </span>
 	</div>
-</form>
+</Form>
 </template>
 
 <script>
 import { mapActions, mapState } from 'pinia';
 import { useCurrencyStore } from '@/stores/currency';
 
+import { Field, Form } from 'vee-validate';
+
 import SelectField from '@/components/FormComponents/SelectField/index.vue';
 
 export default {
 	components: {
-		SelectField
+		SelectField,
+		Field,
+		// eslint-disable-next-line vue/no-reserved-component-names
+		Form
 	},
 	data: () => ({
 		result: null,
@@ -62,6 +67,9 @@ export default {
 		...mapState(useCurrencyStore, ['currencyList', 'updateRateList'])
 	},
 	methods: {
+		isRequired(value) {
+			return value ? true : 'This field is required';
+		},
 		convert () {
 			this.result = (this.formData.amount * this.formData.toConvertExchangeRate).toFixed(2);
 			const currencyStore = useCurrencyStore();

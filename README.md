@@ -10,7 +10,7 @@ CurrencyConverter.cy.js under cypress > e2e is a test checking if form elements 
 
 SCSS files are dynamically imported in views and components for improving performance. Utility classes are used for commonly used css declarations.
 
-Form validation is not included due to time constraints I'm afraid, sorry about that.
+Added a 'required' amount field for an example form validation.
 
 
 ## Recommended IDE Setup
