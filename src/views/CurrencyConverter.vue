@@ -12,22 +12,15 @@
 		label-text="Base Currency:"
 		:options="currencyList"
 		:value="formData.currencyCode" 
-		@change="formData.toConvertExchangeRate = $event.target.value; formData.toConvertCurrencyCode = $event.target.options[$event.target.options.selectedIndex].text.split('-').pop(); getRateData(formData.toConvertCurrencyCode)" />
-     
-	<div>
-		<label for="convertToCurrency">Convert to currency:</label>
-		<select 
-			data-cy="convert-to-currency"
-			name="convertToCurrency" 
-			id="convertToCurrency"
-			@change="formData.toConvertExchangeRate = $event.target.value; formData.toConvertCurrencyCode = $event.target.options[$event.target.options.selectedIndex].text.split('-').pop(); getRateData(formData.toConvertCurrencyCode)">
+		@change="formData.currencyCode = $event.target.options[$event.target.options.selectedIndex].text.split('-')[0].trim(); getRateData(formData.currencyCode)" />
 
-			<option value="">Please select currency to convert to</option>
-			<option v-for="(option, index) in updateRateList" :key="index" :value="option.exchangeRate" >
-				{{ option.currencyName }} - {{ option.currencyCode }}
-			</option>
-		</select>
-	</div>
+	<SelectField 
+		data-cy="convert-to-currency"
+		name="convertToCurrency" 
+		label-text="Convert to currency:"
+		:options="updateRateList"
+		:value="formData.toConvertExchangeRate"
+		@change="formData.toConvertExchangeRate = $event.target.value; formData.toConvertCurrencyCode = $event.target.options[$event.target.options.selectedIndex].text.split('-')[0].trim();" />
 
 	<button data-cy="submit-button" class="align-self-end">Convert</button>
   
@@ -58,7 +51,6 @@ export default {
 		formData: {
 			amount: null,
 			currencyCode: '',
-			currencyName: '',
 			toConvertCurrencyCode: '',
 			toConvertExchangeRate: null,			
 		}

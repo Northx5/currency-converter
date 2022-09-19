@@ -1,29 +1,37 @@
 <template>
 <div>
 	<label :for="`input-${name}`"> {{ labelText }} </label>
-	<select :id="`input-${name}`" :name="name" @change="$emit('change', $event)">
+	<select :id="`input-${name}`" :name="name" :value="value">
 		<option value="">Please select</option>
 		<option v-for="(option, index) in options" :key="index" :value="option.value">
-			{{ option.currencyCode }}
+			{{ option.label }}
 		</option>
 	</select>
 </div>
 </template>
 <script>
-/* have a separate file for props as mixin when app potentially grows */
-import { formFieldProps }  from '@/mixins/formFieldProps';
 export default {
 	name:'SelectField',
-	mixins: [formFieldProps],
 	props: {
 		options: {
 			type: Array,
 			default () {
 				return [];
 			} 
+		},
+		name: {
+			type: String,
+			default: ''
+		},
+		labelText: {
+			type: String,
+			default: ''
+		},
+		value: {
+			type: [String, Number],
+			default: ''
 		}
-	},
-	emits: ['change']
+	}
 };
 </script>
 

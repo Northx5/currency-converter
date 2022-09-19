@@ -3,12 +3,11 @@ import { defineStore } from 'pinia';
 export const useCurrencyStore = defineStore('currency', {
   state: () => ({
     amount: null,
-    currencyCode: '',
-    exchangeRate: '',
     currencyList: [],
     updateRateList: []
   }),
   actions: {
+    /* Pull currency names and codes */
     async getRatesValues() {
       this.currencyList = [];
       const url = 'http://www.floatrates.com/daily/gbp.json';
@@ -16,11 +15,12 @@ export const useCurrencyStore = defineStore('currency', {
         let currencyData = await (await fetch(url)).json();
         Object.values(currencyData).forEach((data) => {
           this.currencyList.push({
-            currencyCode: data.code,
-            currencyName: data.name,
+            label: data.code + ' - ' + data.name,
+            value: data.code,
           });
         });
-        this.currencyList.unshift({ currencyCode: 'GBP', currencyName: 'U.K. Pound Sterling' });
+        /* Add GBP to the list because we are not pulling it from the API */
+        this.currencyList.unshift({ label: 'GBP - U.K. Pound Sterling', value: 'GBP' });
       } catch {
         console.log('error');
       }
@@ -32,9 +32,8 @@ export const useCurrencyStore = defineStore('currency', {
         let currencyData = await (await fetch(url)).json();
         Object.values(currencyData).forEach((data) => {
           this.updateRateList.push({
-            currencyCode: data.code,
-            currencyName: data.name,
-            exchangeRate: data.rate
+            label: data.code + ' - ' + data.name,
+            value: data.rate
           });
         });
       } catch {
